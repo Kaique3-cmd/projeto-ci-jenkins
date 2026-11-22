@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  jenkins-controller:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins-controller
+    privileged: true
+    user: root
+    ports:
+      - "8080:8080"
+      - "50000:50000" # Porta de comunicação entre Controller e Agents
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock # Permite que o Jenkins crie containers de build
+    networks:
+      - ci-network
+
+volumes:
+  jenkins_home:
+
+networks:
+  ci-network:
+    driver: bridge
