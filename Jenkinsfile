@@ -1,4 +1,4 @@
-pipeline {
+﻿pipeline {
     agent any
 
     environment {
@@ -28,7 +28,7 @@ pipeline {
 
         stage('3. Análise Estática (Lint)') {
             steps {
-                echo "Verificando padrões de código e erros de sintaxe com Flake8..."
+                echo "Verificando padrões de código com Flake8..."
                 sh '''
                     . venv/bin/activate
                     flake8 app/ --max-line-length=100
@@ -46,7 +46,6 @@ pipeline {
             }
             post {
                 always {
-                    // Publica o resultado dos testes na interface gráfica do Jenkins
                     junit 'relatorio-testes.xml'
                 }
             }
@@ -62,14 +61,10 @@ pipeline {
 
     post {
         success {
-            echo "PIPELINE CONCLUÍDA COM SUCESSO! Código integrado e validado (Build #${env.BUILD_NUMBER})."
+            echo "PIPELINE CONCLUÍDA COM SUCESSO! (Build #${env.BUILD_NUMBER})"
         }
         failure {
-            echo "FALHA NA INTEGRAÇÃO! O commit quebrou a build ou os testes. Notificando equipe..."
-        }
-        always {
-            echo "Limpando workspace temporário..."
-            sh "rm -rf venv"
+            echo "FALHA NA INTEGRAÇÃO! O commit quebrou a build ou os testes."
         }
     }
 }
